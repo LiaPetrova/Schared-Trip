@@ -4,18 +4,18 @@
 
  const JWT_SECRET = 'fhkj345j34kjfoi3409t';
  
- async function register (email, username, password) {
+ async function register (email, gender, password) {
 
-    const existing = await User.findOne({ username }).collation({ locale: 'en', strength: 2});
+    const existing = await User.findOne({ email }).collation({ locale: 'en', strength: 2});
     if (existing) {
-        throw new Error('Username is taken');
+        throw new Error('Email is taken');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
         email,
-        username,
+        gender,
         hashedPassword
     });
 
@@ -25,17 +25,17 @@
     return token;
  }
 
- async function login(username, password) {
-    const user = await User.findOne({ username }).collation({ locale: 'en', strength: 2});
+ async function login(email, password) {
+    const user = await User.findOne({ email }).collation({ locale: 'en', strength: 2});
 
     if(!user) {
-        throw new Error('Incorrect username or passowrd');
+        throw new Error('Incorrect email or password');
     }
 
     const match = await bcrypt.compare(password, user.hashedPassword);
 
     if(!match) {
-        throw new Error('Incorrect username or passowrd');
+        throw new Error('Incorrect email or passowrd');
 
     }
 
@@ -45,12 +45,12 @@
  async function logout() {
 
  }
-
- function createSession({ _id, username }) {
+//TODO
+ function createSession({ _id, email }) {
 
     const payload = {
         _id,
-        username
+        email
     };
 
     const token = jwt.sign(payload, JWT_SECRET);

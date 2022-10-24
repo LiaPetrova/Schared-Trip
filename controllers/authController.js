@@ -12,28 +12,31 @@ authController.get('/register', (req, res) => {
 authController.post('/register', async (req, res) => {
     try {
 
-        if(req.body.username == '' || req.body.password == '') {
+        if(req.body.email == '' || req.body.password == '') {
             throw new Error ('All fields are required');
+        }
+
+        if(req.body.password.length < 4) {
+            throw new Error ('Password must be at least 4 characters long');
         }
 
         if(req.body.password !== req.body.rePassword) {
             throw new Error ('Passwords don\'t match');
         }
-        const token = await register(req.body.email, req.body.username, req.body.password);
+    
+        const token = await register(req.body.email,req.body.gender, req.body.password);
 
         //TODO check if register creates session 
         res.cookie('token', token);
         res.redirect('/');
     } catch(error) {
         const errors = parseError(error);
-        
+        const isMale = req.body.gender == 'male';
         // TODO error display and replace with actual template
         res.render('register', {
             title: 'Register Page',
-            body: {
-                username: req.body.username,
-                email: req.body.email
-            },
+            email: req.body.email,
+            isMale,
             errors
         })
 
@@ -50,10 +53,10 @@ authController.get('/login', (req, res) => {
 authController.post('/login', async (req, res) => {
 
     try {
-        if(req.body.username == '' || req.body.password == '') {
+        if(req.body.email == '' || req.body.password == '') {
             throw new Error ('All fields are required');
         }
-        const token = await login(req.body.username, req.body.password);
+        const token = await login(req.body.email, req.body.password);
         res.cookie('token', token);
         res.redirect('/');
 
@@ -62,7 +65,7 @@ authController.post('/login', async (req, res) => {
         const errors = parseError(error);
         res.render('login', {
             title: 'Login Page',
-            username: req.body.username,
+            email: req.body.email,
             errors
         }); 
     }

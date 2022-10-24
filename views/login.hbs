@@ -1,45 +1,23 @@
-<body>
-
-    <div id="container">
-        <div>
-            <!-- <div class="notification loadingBox">
-                Loading …
-            </div>
-            <div class="notification infoBox">
-                <span>Info</span>
-            </div> -->
-            <div class="notification errorBox">
-                {{#if errors}}
-                {{#each errors}}
-                <span>{{this}}</span>
-                {{/each}}
-                {{/if}}
-                {{!-- <span>Error</span> --}}
-            </div>
-        </div>
-
-        <nav>
-            <div class="left-container">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/auth/login">Login</a></li>
-                    <li><a href="/auth/register">Register</a></li>
-                </ul>
-            </div>
-        </nav>
-
-        <section id="viewLogin">
-            <h2>Login:</h2>
-            <form id="formLogin" method="POST" action="/auth/login">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Enter your Username" {{username}}>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your Password">
-                <input type="submit" class="login" value="Login">
+<section class="py-5" id="login-page">
+    <div class="container login-page">
+        <h1>Login</h1>
+        <div class="login">
+            <form action="/auth/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email"
+                        value="{{email}}">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password" name="password"
+                        value="">
+                </div>
+                <div class="form-group">
+                    <p>Not registered yet? <a href="/auth/register">Register Now!</a></p>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-        </section>
-
-        <footer>@SoftUni - JS Back-end - BookingUni 2020</footer>
+        </div>
     </div>
-
-</body>
+</section>
