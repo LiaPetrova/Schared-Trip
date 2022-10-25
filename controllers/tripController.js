@@ -1,5 +1,5 @@
 const { hasUser } = require('../middlewares/guards');
-const { createTrip, getAll, getById, joinTrip } = require('../services/tripService');
+const { createTrip, getAll, getById, joinTrip, editTrip, deleteTrip } = require('../services/tripService');
 const { parseError } = require('../util/parser');
 
 const tripController = require('express').Router();
@@ -20,7 +20,7 @@ tripController.get('/:id/details', async (req, res) => {
         trip.buddies = trip.buddies.join(', ')
     }
 
-    if(trip.owner._id.toString() == req.user._id.toString()) {
+    if(trip.owner._id.toString() == req.user?._id.toString()) {
         trip.isOwner = true;
     }
 
@@ -28,7 +28,7 @@ tripController.get('/:id/details', async (req, res) => {
         trip.isNotFull = true;
     }
 
-    if(trip.buddies.includes(req.user.email)) {
+    if(trip.buddies.includes(req.user?.email)) {
         trip.hasJoined = true;
     }
 
@@ -39,7 +39,8 @@ tripController.get('/:id/details', async (req, res) => {
     });
 });
 
-tripController.get('/:id/join', async (req, res) => {
+
+tripController.get('/:id/join', hasUser(), async (req, res) => {
     const trip = await getById(req.params.id);
 
     try {
@@ -76,6 +77,66 @@ tripController.get('/:id/join', async (req, res) => {
         });
     }
     
+});
+
+tripController.get('/:id/edit', hasUser(), async (req, res) => {
+    const trip = await getById(req.params.id);
+
+    if(req.user._id != trip.owner._id) {
+       return res.redirect('/trip/catalog');
+    }
+
+    res.render('edit', {
+        title: 'Edit Trip',
+        trip,
+        id: req.params.id
+    });
+});
+
+tripController.post('/:id/edit', hasUser(),  async (req, res) => {
+    let trip = await getById(req.params.id);
+
+    try {
+        if(req.user._id != trip.owner._id) {
+            throw new Error('You cannot edit the trip from someone else');
+         }
+
+        if (Object.values(req.body).some(v => v == '')) {
+            
+            throw new Error ('All fields are required');
+        }
+
+        await editTrip(req.params.id, req.body);
+        res.redirect(`/trip/${req.params.id}/details`);
+
+    } catch(error) {
+        
+        res.render('edit', {
+            title: 'Edit Trip',
+            errors: parseError(error),
+            trip: req.body,
+            id: req.params.id
+        });
+    }
+
+});
+
+tripController.get('/:id/delete', hasUser(), async (req, res) => {
+    const trip = await getById(req.params.id);
+
+    try {
+        if(req.user._id != trip.owner._id) {
+            throw new Error ('You cannot delete the trip from someone else. You can login as owner here')
+        }
+        await deleteTrip(req.params.id);
+        res.redirect('/trip/catalog');  
+
+    } catch (error) {
+        res.render('login', {
+            title: 'Login Page',
+            errors: parseError(error)
+        });
+    }
 });
 
 tripController.get('/create', hasUser(), (req, res)=> {
