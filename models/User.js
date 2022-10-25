@@ -1,6 +1,6 @@
 const { model, Schema, Types } = require('mongoose');
 
-const EMAIL_PATTERN = /^\w+@[a-zA-z1-9]+\.[a-zA-Z]+$/i;
+const EMAIL_PATTERN = /^[\w\.]+@[a-zA-z1-9]+\.[a-zA-Z]+$/i;
 //TODO
 const userSchema = new Schema({
     email: { type: String, validate: {
@@ -9,6 +9,7 @@ const userSchema = new Schema({
     }},
     gender: { type: String, enum: ['male', 'female']},
     trips: { type: [Types.ObjectId], default: [], ref: 'Trip'},
+    tripsCount: { type: Number, default: 0 },
     hashedPassword: { type: String, required: true }
 });
 

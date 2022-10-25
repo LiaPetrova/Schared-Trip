@@ -62,8 +62,12 @@
    return user;
  }  
 
+ async function getUserById (id) {
+    return User.findById(id).populate('trips').lean();
+ }
  module.exports = {
     login,
     register,
-    verifyToken
+    verifyToken,
+    getUserById
  };

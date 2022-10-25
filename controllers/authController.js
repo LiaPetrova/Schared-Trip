@@ -1,15 +1,16 @@
+const { isGuest } = require('../middlewares/guards');
 const { register, verifyToken, login } = require('../services/userService');
 const { parseError } = require('../util/parser');
 
 const authController = require('express').Router();
 
-authController.get('/register', (req, res) => {
+authController.get('/register', isGuest (), (req, res) => {
     res.render('register', {
         title: 'Register Page'
     });
 });
 
-authController.post('/register', async (req, res) => {
+authController.post('/register', isGuest(), async (req, res) => {
     try {
 
         if(req.body.email == '' || req.body.password == '') {
@@ -43,14 +44,14 @@ authController.post('/register', async (req, res) => {
     }
 });
 
-authController.get('/login', (req, res) => {
+authController.get('/login', isGuest(), (req, res) => {
     // TODO error display and replace with actual template
     res.render('login', {
         title: 'Login Page'
     });
 });
 
-authController.post('/login', async (req, res) => {
+authController.post('/login', isGuest(), async (req, res) => {
 
     try {
         if(req.body.email == '' || req.body.password == '') {

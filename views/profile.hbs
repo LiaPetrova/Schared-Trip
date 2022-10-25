@@ -1,3 +1,5 @@
+
+{{#with user}}
 <section class="profile col-md-6 text-center col-lg" id="profile-page">
     <div class="profile-container">
         <!-- Do not forget to change the path to the image -->
@@ -11,7 +13,7 @@
         <div class="trips-info">
             <!-- If there are trips created by the current logged in user display each of them -->
             {{#if trips}} 
-                {{each trips}}
+                {{#each trips}}
                     {{> tripsInfo}}
                 {{/each}}
             {{else}}
@@ -22,3 +24,4 @@
 
     </div>
 </section>
+{{/with}}

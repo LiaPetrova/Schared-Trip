@@ -11,7 +11,7 @@ const tripSchema = new Schema({
         validator: (value) => (URL_PATTERN.test(value)),
         message: 'Invalid URL' 
     }},
-    carBrand: { type: String, minLength: [4, 'End point must be at least 4 characters long'] },
+    carBrand: { type: String, minLength: [4, 'Car brand must be at least 4 characters long'] },
     seats: { type: Number, min: [0, 'Seats count should be a positive number'], max: [4, 'Seats count can be macimum 4 seats']},
     price: { type: Number, min: [1, 'Price should be a positive number'], max: [50, 'Price cannot be higher than 50']},
     description: { type: String, minLength: [10, 'Description must be at least 10 characters long']},

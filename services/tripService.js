@@ -9,12 +9,30 @@ async function getById (id) {
     return Trip.findById(id).populate('owner').lean();
 }
 
-async function createTrip (trip, userId) {
+async function createTrip (tripData, userId) {
+    const trip = await Trip.create(tripData);
+    
     const user = await User.findById(userId);
     user.trips.push(trip._id);
+    user.tripsCount++;
     await user.save();
 
-   return Trip.create(trip);
+}
+
+async function editTrip (tripId, trip) {
+    const existing =  await Trip.findById(tripId);
+
+    existing.start = trip.start;
+    existing.end = trip.end;
+    existing.date = trip.date;
+    existing.time = trip.time;
+    existing.imageUrl = trip.imageUrl;
+    existing.price = trip.price;
+    existing.carBrand = trip.carBrand;
+    existing.description = trip.description;
+    existing.seats = trip.seats;
+
+    await existing.save();
 }
 
 async function joinTrip (tripId, userEmail) {
@@ -25,9 +43,16 @@ async function joinTrip (tripId, userEmail) {
 
     await trip.save();
 }
+
+async function deleteTrip (id) {
+    return Trip.findByIdAndRemove(id);
+}
+
 module.exports = {
     getAll,
     getById,
     createTrip,
-    joinTrip
+    joinTrip,
+    editTrip,
+    deleteTrip
 };
